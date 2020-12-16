@@ -724,22 +724,17 @@ class test_threads(SherpaTestCase):
     @requires_fits
     def test_lev3fft(self):
         self.run_thread('lev3fft', scriptname='bar.py')
-        self.assertEqualWithinTol(self.locals['src'].fwhm.val,
-                                  0.0442234, 1e-4)
-        self.assertEqualWithinTol(self.locals['src'].xpos.val,
-                                  150.015, 1e-4)
-        self.assertEqualWithinTol(self.locals['src'].ypos.val,
-                                  2.66494, 1e-4)
-        self.assertEqualWithinTol(self.locals['src'].ampl.val,
-                                  1.56384, 1e-4)
-        self.assertEqualWithinTol(self.locals['bkg'].c0.val,
-                                  -1.51662, 1e-4)
+        assert self.locals['src'].fwhm.val == approx(1.6304283807465337e-05)
+        assert self.locals['src'].xpos.val == approx(150.014516168296)
+        assert self.locals['src'].ypos.val == approx(2.6650092327584507)
+        assert self.locals['src'].ampl.val == approx(97.24051178672816)
+        assert self.locals['bkg'].c0.val == approx(0.02087374459610318)
 
         fres = ui.get_fit_results()
-        assert fres.istatval == approx(19496.3, rel=1e-4)
-        assert fres.statval == approx(592.32647, rel=1e-4)
-        self.assertEqual(fres.numpoints, 3307)
-        self.assertEqual(fres.dof, 3302)
+        assert fres.istatval == approx(6456.0299149344855)
+        assert fres.statval == approx(612.1496898022738, rel=1e-4)
+        assert fres.numpoints == 3307
+        assert fres.dof == 3302
 
     @requires_fits
     @requires_xspec
