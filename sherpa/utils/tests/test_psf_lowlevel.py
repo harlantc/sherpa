@@ -101,7 +101,7 @@ def test_tcdData_convolve_error_3d():
     with pytest.raises(TypeError) as te:
         out.convolve(data, kernel, [2, 2, 2], [2, 2, 1], [0, 0, 0])
 
-    assert str(te.value) == 'Padding dimension not supported'
+    assert str(te.value) == 'Unsupported number of pad dimensions: 3'
 
 
 @pytest.mark.parametrize('actual,expected',
@@ -191,10 +191,9 @@ def test_xpad_data_error4(func):
     with pytest.raises(TypeError) as te:
         func([1, 2, 3, 4, 5, 6, 7, 8], [2, 2, 2], [2, 2, 2])
 
-    if func.__name__ == 'pad_data':
-        emsg = 'padding kernel failed - dimension unsupported'
-    else:
-        emsg = 'unpadding kernel failed-dimension unsupported'
+    emsg = 'padding kernel failed - dimension unsupported'
+    if func.__name__ == 'unpad_data':
+        emsg = f'un{emsg}'
 
     assert str(te.value) == emsg
 
