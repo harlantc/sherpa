@@ -35,7 +35,7 @@ if [ ${TEST} == submodule ]; then
     # pip install pytest-cov codecov;
     conda install -yq pytest-cov codecov; # adding codecov to see if removing it causes the test failure???
 
-    python setup.py -q test -a "--cov sherpa --cov-report term" || exit 1;
+    python setup.py -q test -a "--cov sherpa --cov-report xml" || exit 1; #term to xml
 fi
 
 # Run smoke test
@@ -48,6 +48,6 @@ if [ ${TEST} == package ] || [ ${TEST} == none ]; then
     conda install -yq pytest-cov codecov; # adding codecov to see if removing it causes the test failure???
     
     # This automatically picks up the sherpatest module when TEST==package
-    sherpa_test --cov sherpa --cov-report term || exit 1;
+    sherpa_test --cov sherpa --cov-report xml || exit 1; #term to xml
 fi
 
