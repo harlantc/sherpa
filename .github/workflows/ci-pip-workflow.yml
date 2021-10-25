@@ -81,7 +81,7 @@ jobs:
         if [ ${TEST} == package ] ; then
             pip install pytest-xvfb
         fi
-        sherpa_test --cov-report xml || exit 1
+        sherpa_test || exit 1
 
     - name: Submodule test with pytest
       if: matrix.test-data == 'submodule'
