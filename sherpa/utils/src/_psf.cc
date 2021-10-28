@@ -134,9 +134,10 @@ static int _pad(const long length, long& factor)
     long* ptr = padding;
     factor = *std::lower_bound( ptr, ptr + num, length );
     return EXIT_SUCCESS;
-  } else if ( length < padding[0] )
+  } else if ( length < padding[0] ) {
     factor = padding[0];
-  else
+    return EXIT_SUCCESS;
+  } else
     factor = 0;
 
   std::ostringstream err;
