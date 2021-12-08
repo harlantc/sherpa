@@ -265,7 +265,7 @@ static bool same_size_arrays( npy_intp size1, npy_intp size2,
   if ( size1 != size2 ) {
     std::ostringstream err;
     err << "input array sizes do not match" << suffix;
-    err << name1 << ": " << size1 << name2 << ": " << size2;
+    err << name1 << ": " << size1 << name2 << ":  vs " << size2;
     PyErr_SetString( PyExc_TypeError, err.str().c_str() );
     return false;
   } else
@@ -295,11 +295,11 @@ static PyObject* tcdPyData_convolve( tcdPyData* self, PyObject* args )
     return NULL;
   
   if( !same_size_arrays( dims_src.get_size(), dims_kern.get_size(),
-                         ", ", "dims_src", " vs dims_kern" ) )
+                         ", ", "dims_src", "dims_kern" ) )
     return NULL;
 
   if( !same_size_arrays( dims_kern.get_size(), center.get_size(),
-                         ", ", "dims_kern", " vs center" ) )
+                         ", ", "dims_kern", "center" ) )
     return NULL;
   
   // src and kernel dims should be equal length
@@ -312,11 +312,11 @@ static PyObject* tcdPyData_convolve( tcdPyData* self, PyObject* args )
                                     1, std::multiplies<long>() );
   
   if( !same_size_arrays( source.get_size(), src_size, " dimensions, ",
-                         "source size", " vs source dim" ) )
+                         "source size", "source dim" ) )
     return NULL;
   
   if( !same_size_arrays( kernel.get_size(), kern_size, " dimensions, ",
-                         "kernel size", " vs kernel dim" ) )
+                         "kernel size", "kernel dim" ) )
     return NULL;
   
   const long nAxes = (long) dims_kern.get_size();
@@ -723,23 +723,23 @@ static PyObject* extract_kernel( PyObject* self, PyObject* args )
 
   
   if( !same_size_arrays( dims_new.get_size(), nAxes, ", ",
-                         "dims_new", " vs dims_kern" ) )
+                         "dims_new", "dims_kern" ) )
      return NULL;
 
   if( !same_size_arrays( nAxes, center.get_size(), ", ",
-                         "dims_kern", " vs center" ) )
+                         "dims_kern", "center" ) )
     return NULL;
 
   if( !same_size_arrays( nAxes, xlo.get_size(), ", ",
-                         "dims_kern", " vs xlo" ) )
+                         "dims_kern", "xlo" ) )
     return NULL;
 
   if( !same_size_arrays( nAxes, xhi.get_size(), ", ",
-                         "dims_kern", " vs xhi" ) )
+                         "dims_kern", "xhi" ) )
     return NULL;
 
   if( !same_size_arrays( nAxes, widths.get_size(), ", ",
-                         "dims_kern", " vs widths" ) )
+                         "dims_kern", "widths" ) )
     return NULL;
 
   if( EXIT_SUCCESS != lo.zeros( 1, dims_kern.get_dims() ) )
@@ -843,7 +843,7 @@ static PyObject* pad_data( PyObject* self, PyObject* args )
     return NULL;
 
   if( !same_size_arrays( shape.get_size(), padshape.get_size(),
-                         ", ", "shape", " vs padshape" ) )
+                         ", ", "shape", "padshape" ) )
     return NULL;
   
   long size=1, padsize=1;
@@ -857,7 +857,7 @@ static PyObject* pad_data( PyObject* self, PyObject* args )
   }
 
   if ( !same_size_arrays( kernel.get_size(), size, " dimensions, ",
-                          "kernel size", " vs kernel dim" ) )
+                          "kernel size", "kernel dim" ) )
     return NULL;
   
   npy_intp dims[1];
@@ -888,7 +888,7 @@ static PyObject* unpad_data( PyObject* self, PyObject* args )
     return NULL;
 
   if( !same_size_arrays( shape.get_size(), padshape.get_size(),
-                        ", ", "shape", " vs padshape" ) )
+                        ", ", "shape", "padshape" ) )
     return NULL;
   
   long size=1, padsize=1;
@@ -902,7 +902,7 @@ static PyObject* unpad_data( PyObject* self, PyObject* args )
   }
 
   if ( !same_size_arrays( kernel.get_size(), padsize, " dimensions, ",
-                          "kernel size",  " vs kernel dim" ) )
+                          "kernel size",  "kernel dim" ) )
     return NULL;
   
   npy_intp dims[1];
