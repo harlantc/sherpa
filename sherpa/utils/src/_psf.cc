@@ -265,7 +265,7 @@ static bool same_size_arrays( npy_intp size1, npy_intp size2,
   if ( size1 != size2 ) {
     std::ostringstream err;
     err << "input array sizes do not match" << suffix;
-    err << name1 << ": " << size1 << name2 << ":  vs " << size2;
+    err << name1 << ": " << size1 << " vs " << name2 << ": " << size2;
     PyErr_SetString( PyExc_TypeError, err.str().c_str() );
     return false;
   } else
