@@ -260,11 +260,15 @@ static int _convolve( tcdPyData* self, double* source, double* kernel,
 }
 
 static bool same_size_arrays( npy_intp size1, npy_intp size2,
-                              const char *suffix, const char *name1,
+                              const char* suffix, const char *name1,
                               const char *name2 ) {
   if ( size1 != size2 ) {
     std::ostringstream err;
-    err << "input array sizes do not match" << suffix;
+    if ( 0 == strcmp( suffix, " dimensions, " ) )
+      err << "input array size do not match";
+    else
+      err << "input array sizes do not match";
+    err << suffix;
     err << name1 << ": " << size1 << " vs " << name2 << ": " << size2;
     PyErr_SetString( PyExc_TypeError, err.str().c_str() );
     return false;
