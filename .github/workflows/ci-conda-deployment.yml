@@ -3,12 +3,11 @@ name: Conda Deployments
 #Only run when updating main, ciaox, or release/... branches (no PRs).
 #With check-skip job, we skip build on main/ciaox if directly tagged as a release.
 # (To only build releases on the release branch)
-on:
-  push:
-    branches:
-    - main
-    - ciaox
-    - 'release/**'
+on: push
+    # branches:
+    # - main
+    # - ciaox
+    # - 'release/**'
 
 #Reduces GH Action duplication:
 # Cancels the previous pipeline for this ref it is still running
