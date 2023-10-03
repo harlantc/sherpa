@@ -55,8 +55,8 @@ jobs:
   # based on it being defined in the matrix or not.
   build-linux:
     name: Linux Python ${{ matrix.python-version }}
-    if: ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
-    needs: ["check-skip"]
+    # if: ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
+    # needs: ["check-skip"]
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -120,7 +120,7 @@ jobs:
   build-macos:
     name: MacOS Python ${{ matrix.python-version }}
     # if: github.repository == 'sherpa/sherpa' && ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
-    needs: ["check-skip"]
+    # needs: ["check-skip"]
     runs-on: ${{ matrix.os-type }}
     strategy:
       matrix:
