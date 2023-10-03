@@ -23,7 +23,7 @@ defaults:
   run:
     shell: bash
 
-# jobs:
+jobs:
 #   check-skip:
 #     name: Skip the Pipeline if tagged and NOT on the release branch
 #     runs-on: ubuntu-latest
