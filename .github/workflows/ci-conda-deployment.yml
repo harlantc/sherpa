@@ -3,12 +3,11 @@ name: Conda Deployments
 #Only run when updating main, ciaox, or release/... branches (no PRs).
 #With check-skip job, we skip build on main/ciaox if directly tagged as a release.
 # (To only build releases on the release branch)
-on:
-  push:
-    branches:
-    - main
-    - ciaox
-    - 'release/**'
+on: push
+    # branches:
+    # - main
+    # - ciaox
+    # - 'release/**'
 
 #Reduces GH Action duplication:
 # Cancels the previous pipeline for this ref it is still running
@@ -25,39 +24,39 @@ defaults:
     shell: bash
 
 jobs:
-  check-skip:
-    name: Skip the Pipeline if tagged and NOT on the release branch
-    runs-on: ubuntu-latest
-    if: github.repository == 'sherpa/sherpa'
-    outputs:
-      skip_pipeline: ${{ steps.skip_check.outputs.skip_pipeline }}
+#   check-skip:
+#     name: Skip the Pipeline if tagged and NOT on the release branch
+#     runs-on: ubuntu-latest
+#     if: github.repository == 'sherpa/sherpa'
+#     outputs:
+#       skip_pipeline: ${{ steps.skip_check.outputs.skip_pipeline }}
 
-    steps:
-    #Checkout the code with a depth of 0 to grab the tags/branches as well
-    - name: Checkout Code
-      uses: actions/checkout@v3.1.0
-      with:
-        fetch-depth: 0
+#     steps:
+#     #Checkout the code with a depth of 0 to grab the tags/branches as well
+#     - name: Checkout Code
+#       uses: actions/checkout@v3.1.0
+#       with:
+#         fetch-depth: 0
 
-    - name: Check build number
-      id: skip_check
-      run: |
-        #BUILD_NUM not passed to future jobs to maintain a separate Git sanity check
-        BUILD_NUM="$(git describe --tags --always | awk '{split($0,a,"-"); print a[2]}')"
-        echo "BUILD_NUM=${BUILD_NUM}"
-        if [ -z "${BUILD_NUM}" ] && [ "${GITHUB_REF:0:20}" != "refs/heads/releases/" ] ; then
-            #Skip the build/test/deploy if directly on a tag and NOT on a release branch
-            echo "skip_pipeline=true" >> $GITHUB_OUTPUT
-        else
-            echo "skip_pipeline=false" >> $GITHUB_OUTPUT
-        fi
+#     - name: Check build number
+#       id: skip_check
+#       run: |
+#         #BUILD_NUM not passed to future jobs to maintain a separate Git sanity check
+#         BUILD_NUM="$(git describe --tags --always | awk '{split($0,a,"-"); print a[2]}')"
+#         echo "BUILD_NUM=${BUILD_NUM}"
+#         if [ -z "${BUILD_NUM}" ] && [ "${GITHUB_REF:0:20}" != "refs/heads/releases/" ] ; then
+#             #Skip the build/test/deploy if directly on a tag and NOT on a release branch
+#             echo "skip_pipeline=true" >> $GITHUB_OUTPUT
+#         else
+#             echo "skip_pipeline=false" >> $GITHUB_OUTPUT
+#         fi
 
   #Linux and macOS build separate as we can't use container option dynamically
   # based on it being defined in the matrix or not.
   build-linux:
     name: Linux Python ${{ matrix.python-version }}
-    if: ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
-    needs: ["check-skip"]
+    # if: ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
+    # needs: ["check-skip"]
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -111,17 +110,17 @@ jobs:
         echo "conda build --python ${SHERPA_PYTHON_VERSION} --output-folder ${GITHUB_WORKSPACE}/packages recipes/conda"
         conda build --python ${SHERPA_PYTHON_VERSION} --output-folder ${GITHUB_WORKSPACE}/packages recipes/conda
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: ${{ matrix.os-dir }}
-        path: ${{ github.workspace }}/packages/*/sherpa*bz2
-        if-no-files-found: error
-        retention-days: 3
+    # - uses: actions/upload-artifact@v3
+    #   with:
+    #     name: ${{ matrix.os-dir }}
+    #     path: ${{ github.workspace }}/packages/*/sherpa*bz2
+    #     if-no-files-found: error
+    #     retention-days: 3
 
   build-macos:
     name: MacOS Python ${{ matrix.python-version }}
-    if: github.repository == 'sherpa/sherpa' && ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
-    needs: ["check-skip"]
+    # if: github.repository == 'sherpa/sherpa' && ${{ needs.check-skip.outputs.skip_pipeline }} == "false"
+    # needs: ["check-skip"]
     runs-on: ${{ matrix.os-type }}
     strategy:
       matrix:
@@ -178,12 +177,12 @@ jobs:
         echo "conda build --python ${SHERPA_PYTHON_VERSION} --output-folder ${GITHUB_WORKSPACE}/packages recipes/conda"
         conda build --python ${SHERPA_PYTHON_VERSION} --output-folder ${GITHUB_WORKSPACE}/packages recipes/conda
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: ${{ matrix.os-dir }}
-        path: ${{ github.workspace }}/packages/*/sherpa*bz2
-        if-no-files-found: error
-        retention-days: 3
+    # - uses: actions/upload-artifact@v3
+    #   with:
+    #     name: ${{ matrix.os-dir }}
+    #     path: ${{ github.workspace }}/packages/*/sherpa*bz2
+    #     if-no-files-found: error
+    #     retention-days: 3
 
 #The jobs below should not run if "build-linux" or "build-macos" are skipped.
 #If they try to, then the "pre-deploy-test" stage will fail anyway and the deployment will NOT be attempted.
@@ -221,6 +220,7 @@ jobs:
         curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-${CONDA_OS}.sh -o conda-installer.sh
         bash conda-installer.sh -b -p ${conda_loc}
         source ${conda_loc}/etc/profile.d/conda.sh
+        conda update -n base -c conda-forge conda
         conda install conda-build
         echo "Packages downloaded here: ${{steps.download.outputs.download-path}}"
         echo "ls packages/*/sherpa*.bz2"
